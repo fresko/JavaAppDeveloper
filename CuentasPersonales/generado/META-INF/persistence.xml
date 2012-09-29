@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+    http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" version="1.0">
+    <persistence-unit name="CuentasPersonalesPU"
+        transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+                    <class>org.zathura.cuentas.personales.CpDetalleMovimiento</class>
+                                <class>org.zathura.cuentas.personales.CpGrupoMovimiento</class>
+                                <class>org.zathura.cuentas.personales.CpMovimiento</class>
+                                <class>org.zathura.cuentas.personales.CpTipoMovimiento</class>
+                                <class>org.zathura.cuentas.personales.CpUsuarios</class>
+                            <properties>
+            <property name="hibernate.connection.driver_class"
+                value="oracle.jdbc.driver.OracleDriver" />
+             <property name="hibernate.connection.url"
+                    value="jdbc:oracle:thin:@localhost:1521:XE" />
+             <property name="hibernate.connection.username" value="cuentapersonal" />
+             <property name="hibernate.connection.password" value="cuentapersonal1234" />
+        </properties>
+    </persistence-unit>
+</persistence>

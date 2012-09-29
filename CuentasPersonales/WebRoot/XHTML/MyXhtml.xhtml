@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	</h:head>		
+	<h:body>
+		  <ui:composition template="/XHTML/CommonColumnsContent.xhtml">
+			<ui:define name="header">
+				<ui:include src="/WEB-INF/facelets/header.jspx" />
+			</ui:define>
+        	<br/>
+        	<br/> 	
+		 
+		 <ui:define name="body">	
+			<f:view>
+			<p:ajaxStatus onstart="statusDialog.show();" onsuccess="statusDialog.hide();"/>               
+					<p:dialog modal="true" widgetVar="statusDialog" header="Loading"  draggable="false" closable="false">  
+   						<p:graphicImage value="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.request.contextPath}/images/ajaxloadingbar.gif" />   
+					</p:dialog>
+		 
+		  <h:form id="form">
+			<div align="center">
+               <h:link id="cmdBack" outcome="goInitialMenu" value="Back" style="color:blue;" />
+			 </div>
+			 <br/>
+			<p:accordionPanel multiple="true" dynamic="true" >
+			 <p:tab title="Registrar movimiento" >
+				
+			   <p:messages id="msg" showDetail="true"/>
+			   <p:growl id="men"/>
+			       <h:panelGrid columns="5" id="panel" border="1">
+			         <f:facet name="header">
+			         <p:row>  
+			            <p:column colspan="2">Descripcion Movimiento</p:column>  
+			            <p:column colspan="2"> </p:column>  
+			          
+			        </p:row>  
+					 </f:facet>
+						<p:inputText id="txtDescripcionMovimiento"  binding="#{cpMovimientoView.txtDescripcionMovimiento}"/>
+					
+						<p:selectOneRadio id="options" value="#{cpMovimientoView.slctTipoMovimiento}" >  
+						     <f:selectItem itemLabel="Ingreso" itemValue="2" />
+				             <f:selectItem itemLabel="Egreso" itemValue="1" />  
+				         <p:ajax update="grupomovimiento" listener="#{cpMovimientoView.listener_grupoMovimiento}"/>    
+     			        </p:selectOneRadio>  
+     			        
+     			        <p:selectOneMenu id="grupomovimiento" value="#{cpMovimientoView.slctGrupoMovimiento}" effect="fade" >  
+				           <f:selectItems value="#{cpMovimientoView.listGrupoMovimento}" />  
+				        </p:selectOneMenu>
+				        
+				        
+         				<p:commandButton id="btnSave" value="Save" action="#{cpMovimientoView.action_save_withoutId}" update="msg,panelAplica,tablaAplica"   binding="#{cpMovimientoView.btnSave}" />
+					   </h:panelGrid>
+				   <h:panelGrid columns="5" id="panelAplica" border="1">
+				     <f:facet name="header">
+			         <p:row>  
+			            <p:column colspan="5">Aplicar Movimiento para el Año : 
+			             <p:inputText id="txtAnnoAplica" binding="#{cpMovimientoView.txtAnnoAplica}" valueChangeListener="#{cpMovimientoView.startChanged}" size="4" >
+	                       <p:ajax event="change" update="tablaAplica"/>
+	                     </p:inputText> 
+			            </p:column>  
+			         </p:row>  
+					 </f:facet>
+					
+					 
+	    			<p:dataTable id="tablaAplica" value="#{cpMovimientoView.lstMovAplica}" var="cpMovimiento"
+		     			paginator="true" rows="5" rowKey="#{cpMovimiento.descripcionMovimiento}" selection="#{cpMovimientoView.selectedCpMovimiento}"  selectionMode="single">
+						   
+						   <p:ajax event="rowSelect" listener="#{cpMovimientoView.rowEventAplica}" />
+						                    																
+							<p:column filterBy="#{cpMovimiento.descripcionMovimiento}" sortBy="#{cpMovimiento.descripcionMovimiento}" >
+							 <f:facet name="header">
+								<h:outputText value="DescripcionMovimiento"/>
+							</f:facet>
+							 	<h:outputText value="#{cpMovimiento.descripcionMovimiento}"/>
+							</p:column>   
+                    
+                    		<p:column filterBy="#{cpMovimiento.descripcionGrupo}" sortBy="#{cpMovimiento.descripcionGrupo}" >
+							 <f:facet name="header">
+								<h:outputText value="GrupoMovimiento"/>
+							</f:facet>
+							 	<h:outputText value="#{cpMovimiento.descripcionGrupo}"/>
+							</p:column>   
+                    						
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Enero"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox  value="#{cpMovimiento.enero}" valueChangeListener="#{cpMovimientoView.controlCheckEnero}">  
+					            <p:ajax  event="change" update="tablaAplica"/>
+					        </p:selectBooleanCheckbox> 
+							</p:column> 
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Febrero"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.febrero}" valueChangeListener="#{cpMovimientoView.controlCheckFebrero}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column> 
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Marzo"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.marzo}" valueChangeListener="#{cpMovimientoView.controlCheckMarzo}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column> 
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Abril"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.abril}" valueChangeListener="#{cpMovimientoView.controlCheckAbril}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Mayo"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.mayo}" valueChangeListener="#{cpMovimientoView.controlCheckMayo}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Junio"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.junio}" valueChangeListener="#{cpMovimientoView.controlCheckJunio}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Julio"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.julio}" valueChangeListener="#{cpMovimientoView.controlCheckJulio}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Agosto"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.agosto}" valueChangeListener="#{cpMovimientoView.controlCheckAgosto}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Septiembre"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.septiembre}" valueChangeListener="#{cpMovimientoView.controlCheckSeptiembre}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Octubre"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.octubre}" valueChangeListener="#{cpMovimientoView.controlCheckOctubre}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Noviembre"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.noviembre}" valueChangeListener="#{cpMovimientoView.controlCheckNoviembre}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+							<p:column >
+							 <f:facet name="header">
+								<h:outputText value="Diciembre"/>
+							</f:facet> 
+							<p:selectBooleanCheckbox value="#{cpMovimiento.diciembre}" valueChangeListener="#{cpMovimientoView.controlCheckDiciembre}" >  
+					          <p:ajax  event="change" update="tablaAplica"/>   
+					        </p:selectBooleanCheckbox> 
+							</p:column>
+                	</p:dataTable>
+					  
+					
+				   </h:panelGrid>
+				        
+			
+		  </p:tab>
+		  <p:tab title="Lista de Movimientos">
+		    <p:panel id="msgProjectClientesTitle" header="CpDetalleMovimientoData">
+				
+				<p:dataTable id ="tabla" value="#{cpDetalleMovimientoView.data}" var="cpDetalleMovimiento"
+					paginator="true" rows="5"  editable="true" >
+					 
+					 
+					 
+										  <p:column filterBy="#{cpDetalleMovimiento.idDetalleMovimiento}" sortBy="#{cpDetalleMovimiento.idDetalleMovimiento}" 
+							headerText="idDetalleMovimiento">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.idDetalleMovimiento}"/>
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:inputText value="#{cpDetalleMovimiento.idDetalleMovimiento}"/>
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+										
+										
+											
+						<p:column filterBy="#{cpDetalleMovimiento.anno}" sortBy="#{cpDetalleMovimiento.anno}" 
+							headerText="anno">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.anno}"/>
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:inputText value="#{cpDetalleMovimiento.anno}"/>
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+						
+											
+						<p:column filterBy="#{cpDetalleMovimiento.mes}" sortBy="#{cpDetalleMovimiento.mes}" 
+							headerText="mes">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.mes}"/>
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:inputText value="#{cpDetalleMovimiento.mes}"/>
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+						
+											
+						<p:column filterBy="#{cpDetalleMovimiento.observaciones}" sortBy="#{cpDetalleMovimiento.observaciones}" 
+							headerText="observaciones">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.observaciones}"/>
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:inputText value="#{cpDetalleMovimiento.observaciones}"/>
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+						
+											
+						<p:column filterBy="#{cpDetalleMovimiento.pendiente}" sortBy="#{cpDetalleMovimiento.pendiente}" 
+							headerText="pendiente">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.pendiente}"/>
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:inputText value="#{cpDetalleMovimiento.pendiente}"/>
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+						
+											
+						<p:column filterBy="#{cpDetalleMovimiento.valorMovimiento}" sortBy="#{cpDetalleMovimiento.valorMovimiento}" 
+							headerText="valorMovimiento">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.valorMovimiento}"/>
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:inputText value="#{cpDetalleMovimiento.valorMovimiento}"/>
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+						
+											
+						<p:column filterBy="#{cpDetalleMovimiento.valorPago}" sortBy="#{cpDetalleMovimiento.valorPago}" 
+							headerText="valorPago">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.valorPago}"/>
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:inputText value="#{cpDetalleMovimiento.valorPago}"/>
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+						
+											
+						<p:column filterBy="#{cpDetalleMovimiento.idMovimiento_CpMovimiento}" sortBy="#{cpDetalleMovimiento.idMovimiento_CpMovimiento}" 
+							headerText="idMovimiento_CpMovimiento">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.idMovimiento_CpMovimiento}"/>
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:inputText value="#{cpDetalleMovimiento.idMovimiento_CpMovimiento}"/>
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+						
+										
+										   						 
+						 <p:column filterBy="#{cpDetalleMovimiento.fehcaRegistro}" sortBy="#{cpDetalleMovimiento.fehcaRegistro}" 
+							headerText="fehcaRegistro">
+							
+								<p:cellEditor>
+								
+								<f:facet name="output">
+									<h:outputText value="#{cpDetalleMovimiento.fehcaRegistro}">
+									  <f:convertDateTime  pattern="dd/MM/yyyy"/>
+									</h:outputText>		
+								</f:facet>
+							
+								<f:facet name="input">
+									<p:calendar value="#{cpDetalleMovimiento.fehcaRegistro}" showOn="button" pattern="dd/MM/yyyy" navigator="true" >
+									  <f:convertDateTime  pattern="dd/MM/yyyy" timeZone="#{cpDetalleMovimientoView.timeZone}" />	
+								    </p:calendar>		
+								</f:facet>
+								</p:cellEditor>	
+							</p:column>
+						
+					   											
+					<p:column headerText="Options" >
+						<p:rowEditor id="row" />
+						<p:tooltip for="row" value="Edit" showEffect="fade" hideEffect="fade" />
+						<p:tooltip for="btnDelete" value="Delete" showEffect="fade" hideEffect="fade"/>
+						<p:commandButton id="btnDelete" action="#{cpDetalleMovimientoView.actionDeleteDataTableEditable}" title="Delete" onclick="return confirm('Do you really want to delete this Entry?')" icon="ui-icon-trash" update=":form:msg" >
+						<f:setPropertyActionListener value="#{cpDetalleMovimiento}"  target="#{cpDetalleMovimientoView.selectedCpDetalleMovimiento}" />  
+						</p:commandButton>
+						
+					</p:column>	
+				
+				</p:dataTable>	
+					
+				
+			</p:panel>
+		  </p:tab>
+		</p:accordionPanel> 
+			
+		<p:dialog header="Meses " modal="true" showEffect="fade" hideEffect="fade" widgetVar="dlg" resizabled="false">  
+        <p:dataList id="display" value="#{cpMovimientoView.slctCheckMeses}" var="MESES">  
+            #{MESES}  
+        </p:dataList>  
+    </p:dialog>  	
+			
+		</h:form>	
+		  </f:view>
+	 </ui:define>	  
+	
+	  <ui:define name="footer">
+		 <ui:include src="/WEB-INF/facelets/footer.jspx" />
+	   </ui:define>	
+	</ui:composition>
+	</h:body>	
+</html>

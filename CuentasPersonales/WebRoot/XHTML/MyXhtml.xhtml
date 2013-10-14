@@ -61,8 +61,8 @@
 				     <f:facet name="header">
 			         <p:row>  
 			            <p:column colspan="5">Aplicar Movimiento para el Año : 
-			             <p:inputText id="txtAnnoAplica" binding="#{cpMovimientoView.txtAnnoAplica}" valueChangeListener="#{cpMovimientoView.startChanged}" size="4" >
-	                       <p:ajax event="change" update="tablaAplica"/>
+			             <p:inputText id="txtAnnoAplica" binding="#{cpMovimientoView.txtAnnoAplica}"   valueChangeListener="#{cpMovimientoView.startChanged}" size="4" >
+	                        <p:ajax event="change" update="tablaAplica"/> 
 	                     </p:inputText> 
 			            </p:column>  
 			         </p:row>  
@@ -95,7 +95,7 @@
 							<p:selectBooleanCheckbox  value="#{cpMovimiento.enero}" valueChangeListener="#{cpMovimientoView.controlCheckEnero}">  
 					            <p:ajax  event="change" update="tablaAplica"/>
 					        </p:selectBooleanCheckbox> 
-							</p:column> 
+					       	</p:column> 
 							<p:column >
 							 <f:facet name="header">
 								<h:outputText value="Febrero"/>

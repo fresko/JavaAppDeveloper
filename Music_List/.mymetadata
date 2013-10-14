@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="Music_List"
+  id="myeclipse.1348967837060"
+  context-root="/Music_List"
+  j2ee-spec="5.0"
+  archive="Music_List.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

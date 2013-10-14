@@ -24,8 +24,10 @@ import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -63,6 +65,9 @@ public class CpMovimientoView {
     private Long gm = 0L;
     private Long annoAplica;
     
+    private List<String> items;
+    private Map<String,Boolean> checkMap = new HashMap<String,Boolean>();
+    private Map<String,Boolean> checkMap2 = new HashMap<String,Boolean>();
     //meses
     private boolean enero;
     private boolean febrero;
@@ -86,38 +91,31 @@ public class CpMovimientoView {
         super();
     }
     
+    /**
+     * Inicia la consulta de los movimientos 
+     * @param event
+     */
     public void startChanged(ValueChangeEvent event) {
     	try{
-	    	if(event.getNewValue() != null || !event.getNewValue().equals("") )
-	    	annoAplica = new Long(event.getNewValue().toString());
-	    	
-	    	//List<CpMovimientoDTO> dataTmp = new ArrayList<CpMovimientoDTO>();
-	    	//dataTmp=data;
-	    	//Long mes = 0L;  
-	    	for (CpMovimientoDTO cpMovimientoDTO : data) {
-	    		for(Long mes=1L;mes<=12;mes++){
-	    		 Object[] arr={"cpMovimiento",false,cpMovimientoDTO.getIdMovimiento(),"=",
-					      "anno",false,annoAplica,"=",
-					      "mes",false,mes,"="};
-	    		 List<CpDetalleMovimiento> lista = new ArrayList<CpDetalleMovimiento>();
-				 lista=BusinessDelegatorView.findByCriteriaInCpDetalleMovimiento(arr, null, null) ;
-//				 if(mes == 1L){
-//				  if(lista.size()>0){ 
-//					 checkEnero.setValue(true);
-//					 enero = true;
-//					 checkEnero.setSelected(true);
-//					 checkEnero.setRendered(true);
-//					} else {
-//						 checkEnero.setValue(false);
-//				  }
-//				 }
-	    		} 
-	
-	    	}		 
+	    	if(event.getNewValue() != null || !event.getNewValue().equals("") ){
+	    	 annoAplica = new Long(event.getNewValue().toString());
+	    	 consultaLista();
+	    	}	
 	    } catch (Exception e) {
 			 FacesUtils.addErrorMessage(e.getMessage());
 		}
     }
+    
+//     public String getSelected() {
+//       String result = "";
+//        for (checkMap2<String,Boolean> entry : checkMap)) {
+//           if (entry.getValue()) {
+//                result = result + ", "+entry.getKey();
+//            }
+//        }
+//        return result.length() == 0 ? "" : result.sub string(2);
+//     }
+
 
     public void rowEventAplica(SelectEvent e){
 		try{
@@ -355,7 +353,6 @@ public class CpMovimientoView {
                 txtDescripcionMovimiento = new InputText();
             }
 
-            txtDescripcionMovimiento.setValue(cpMovimientoDTO.getDescripcionMovimiento());
 
             if (txtObservaciones == null) {
                 txtObservaciones = new InputText();
@@ -941,120 +938,140 @@ public class CpMovimientoView {
 		return "";
 	}
 
+    public void consultaLista(){
+    	   lstMovAplica = new ArrayList<MovimientoAplica>();
+    		  try{	
+    		   for (CpMovimientoDTO cpMovimientoDTO : this.getData()) {
+    			   MovimientoAplica movAplica = new MovimientoAplica();
+    			   movAplica.setIdMovimiento(cpMovimientoDTO.getIdMovimiento());
+    			   movAplica.setDescripcionMovimiento(cpMovimientoDTO.getDescripcionMovimiento());
+    			   movAplica.setIdGrupoMovimiento_CpGrupoMovimiento(cpMovimientoDTO.getIdGrupoMovimiento_CpGrupoMovimiento());
+    			   movAplica.setDescripcionGrupo(cpMovimientoDTO.getDescripcionGrupo());
+    			   movAplica.setIdUsuario_CpUsuarios(cpMovimientoDTO.getIdUsuario_CpUsuarios());
+    			   movAplica.setObservaciones(cpMovimientoDTO.getObservaciones());
+    			   
+    		  			   
+    			   for(Long mes=1L;mes<=12;mes++){
+    		    		 Object[] arr={"cpMovimiento",false,cpMovimientoDTO.getIdMovimiento(),"=",
+    						      "anno",false,annoAplica,"=",
+    						      "mes",false,mes,"="};
+    		    		 List<CpDetalleMovimiento> lista = new ArrayList<CpDetalleMovimiento>();
+    					 lista=BusinessDelegatorView.findByCriteriaInCpDetalleMovimiento(arr, null, null) ;
+    					 if(mes == 1L){
+    					  if(lista.size()>0){ 
+    						  movAplica.setEnero(true);
+    						} else {
+    						  movAplica.setEnero(false);
+    					  }
+    					 }
+    					 if(mes == 2L){
+    						  if(lista.size()>0){ 
+    							  movAplica.setFebrero(true);
+    							} else {
+    	                          movAplica.setFebrero(false);
+    						  }
+    					 } 
+    					 if(mes == 3L){
+    						  if(lista.size()>0){ 
+    							  movAplica.setMarzo(true);
+    							} else {
+    	                         movAplica.setMarzo(false);
+    						  }
+    					 }
+    					 if(mes == 4L){
+    						  if(lista.size()>0){ 
+    							movAplica.setAbril(true);
+    							} else {
+    	                        movAplica.setAbril(false);
+    						  }
+    					 }
+    					 if(mes == 5L){
+    						  if(lista.size()>0){ 
+    							movAplica.setMayo(true);
+    							} else {
+    	                        movAplica.setMayo(false);
+    						  }
+    					 }
+    					 if(mes == 6L){
+    						  if(lista.size()>0){ 
+    							movAplica.setJunio(true);
+    							} else {
+    	                       movAplica.setJunio(false);
+    						  }
+    					 }
+    					 if(mes == 7L){
+    						  if(lista.size()>0){ 
+    						 	movAplica.setJulio(true);
+    							} else {
+    	                       movAplica.setJulio(false);
+    						  }
+    					 }
+    					 if(mes == 8L){
+    						  if(lista.size()>0){ 
+    							movAplica.setAgosto(true);
+    							} else {
+    	                      movAplica.setAgosto(false);
+    						  }
+    					 }
+    					 if(mes == 9L){
+    						  if(lista.size()>0){ 
+    							movAplica.setSeptiembre(true);
+    							} else {
+    	                     movAplica.setSeptiembre(false);
+    						  }
+    					 }
+    					 if(mes == 10L){
+    						  if(lista.size()>0){ 
+    							movAplica.setOctubre(true);
+    							} else {
+    	                     movAplica.setOctubre(false);
+    						  }
+    					 }
+    					 if(mes == 11L){
+    						  if(lista.size()>0){ 
+    							movAplica.setNoviembre(true);
+    							} else {
+    	                     movAplica.setNoviembre(false);
+    						  }
+    					 }
+    					 if(mes == 12L){
+    						  if(lista.size()>0){ 
+    							movAplica.setDiciembre(true);
+    							} else {
+    	                     movAplica.setDiciembre(false);
+    						  }
+    					 }
+    		    		}
+    			   lstMovAplica.add(movAplica);
+    		   } 
+    		  } catch (Exception e) {
+    				 FacesUtils.addErrorMessage(e.getMessage());
+    		  }  	
+    	
+    }	
+
 	public List<MovimientoAplica> getLstMovAplica() {
-	   lstMovAplica = new ArrayList<MovimientoAplica>();
-	  try{	
-	   for (CpMovimientoDTO cpMovimientoDTO : this.getData()) {
-		   MovimientoAplica movAplica = new MovimientoAplica();
-		   movAplica.setIdMovimiento(cpMovimientoDTO.getIdMovimiento());
-		   movAplica.setDescripcionMovimiento(cpMovimientoDTO.getDescripcionMovimiento());
-		   movAplica.setIdGrupoMovimiento_CpGrupoMovimiento(cpMovimientoDTO.getIdGrupoMovimiento_CpGrupoMovimiento());
-		   movAplica.setDescripcionGrupo(cpMovimientoDTO.getDescripcionGrupo());
-		   movAplica.setIdUsuario_CpUsuarios(cpMovimientoDTO.getIdUsuario_CpUsuarios());
-		   movAplica.setObservaciones(cpMovimientoDTO.getObservaciones());
-		   
-		   for(Long mes=1L;mes<=12;mes++){
-	    		 Object[] arr={"cpMovimiento",false,cpMovimientoDTO.getIdMovimiento(),"=",
-					      "anno",false,annoAplica,"=",
-					      "mes",false,mes,"="};
-	    		 List<CpDetalleMovimiento> lista = new ArrayList<CpDetalleMovimiento>();
-				 lista=BusinessDelegatorView.findByCriteriaInCpDetalleMovimiento(arr, null, null) ;
-				 if(mes == 1L){
-				  if(lista.size()>0){ 
-					  movAplica.setEnero(true);
-					} else {
-					  movAplica.setEnero(false);
-				  }
-				 }
-				 if(mes == 2L){
-					  if(lista.size()>0){ 
-						  movAplica.setFebrero(true);
-						} else {
-                          movAplica.setFebrero(false);
-					  }
-				 } 
-				 if(mes == 3L){
-					  if(lista.size()>0){ 
-						  movAplica.setMarzo(true);
-						} else {
-                         movAplica.setMarzo(false);
-					  }
-				 }
-				 if(mes == 4L){
-					  if(lista.size()>0){ 
-						movAplica.setAbril(true);
-						} else {
-                        movAplica.setAbril(false);
-					  }
-				 }
-				 if(mes == 5L){
-					  if(lista.size()>0){ 
-						movAplica.setMayo(true);
-						} else {
-                        movAplica.setMayo(false);
-					  }
-				 }
-				 if(mes == 6L){
-					  if(lista.size()>0){ 
-						movAplica.setJunio(true);
-						} else {
-                       movAplica.setJunio(false);
-					  }
-				 }
-				 if(mes == 7L){
-					  if(lista.size()>0){ 
-					 	movAplica.setJulio(true);
-						} else {
-                       movAplica.setJulio(false);
-					  }
-				 }
-				 if(mes == 8L){
-					  if(lista.size()>0){ 
-						movAplica.setAgosto(true);
-						} else {
-                      movAplica.setAgosto(false);
-					  }
-				 }
-				 if(mes == 9L){
-					  if(lista.size()>0){ 
-						movAplica.setSeptiembre(true);
-						} else {
-                     movAplica.setSeptiembre(false);
-					  }
-				 }
-				 if(mes == 10L){
-					  if(lista.size()>0){ 
-						movAplica.setOctubre(true);
-						} else {
-                     movAplica.setOctubre(false);
-					  }
-				 }
-				 if(mes == 11L){
-					  if(lista.size()>0){ 
-						movAplica.setNoviembre(true);
-						} else {
-                     movAplica.setNoviembre(false);
-					  }
-				 }
-				 if(mes == 12L){
-					  if(lista.size()>0){ 
-						movAplica.setDiciembre(true);
-						} else {
-                     movAplica.setDiciembre(false);
-					  }
-				 }
-	    		}
-		   lstMovAplica.add(movAplica);
-	   } 
-	  } catch (Exception e) {
-			 FacesUtils.addErrorMessage(e.getMessage());
-	  }  	
-	 	return lstMovAplica;
-		
+		return lstMovAplica;
 	}
 
 	public void setLstMovAplica(List<MovimientoAplica> lstMovAplica) {
 		this.lstMovAplica = lstMovAplica;
+	}
+
+	public List<String> getItems() {
+		return items;
+	}
+
+	public void setItems(List<String> items) {
+		this.items = items;
+	}
+
+	public Map<String, Boolean> getCheckMap() {
+		return checkMap;
+	}
+
+	public void setCheckMap(Map<String, Boolean> checkMap) {
+		this.checkMap = checkMap;
 	}
 	
 	
